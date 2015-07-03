@@ -1,0 +1,22 @@
+{
+    "name": "jstoutenburg/financial-seer",
+    "description": "Program to make financial projections",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joshua Stoutenburg",
+            "email": "jehoshua02@gmail.com"
+        }
+    ],
+    "require": {
+        "fightbulc/moment": "^1.11"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.7"
+    },
+    "autoload": {
+      "psr-4": {
+        "FinancialSeer\\": "src/classes/"
+      }
+    }
+}
