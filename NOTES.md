@@ -156,9 +156,9 @@ $projection->getYear($year); // returns projection info for a year
 Output includes the following:
 
 + Summary:
-  + Income
-  + Fixed Expense
-  + Variable Expense
+  + Incomes
+  + Fixed Expenses
+  + Variable Expenses
   + Debt Payments
   + Mortgage Payments
-  + Balance
+  + Account Balances
