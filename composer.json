@@ -17,6 +17,9 @@
     "autoload": {
       "psr-4": {
         "FinancialSeer\\": "src/classes/"
+      },
+      "psr-0": {
+        "JsonFileDataProviderIterator": "src/classes/"
       }
     }
 }

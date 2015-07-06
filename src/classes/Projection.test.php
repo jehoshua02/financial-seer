@@ -8,9 +8,8 @@ class ProjectionTest extends PHPUnit_Framework_TestCase
      * @group wip
      * @dataProvider getMonthProvider
      */
-    public function testGetMonth($dataName)
+    public function testGetMonth($data)
     {
-        $data = $this->getData($dataName);
         $projection = new Projection();
         if (array_key_exists("account", $data["input"])) {
             call_user_func([$projection, "addAccount"], $data["input"]["account"]);
@@ -27,22 +26,6 @@ class ProjectionTest extends PHPUnit_Framework_TestCase
      */
     public function getMonthProvider()
     {
-        $scenarios = [
-            "getMonth/empty",
-            "getMonth/justAnAccount",
-            "getMonth/income",
-        ];
-
-        return array_map(function ($scenario) {
-            return [$scenario];
-        }, $scenarios);
-    }
-
-    protected function getData($dataName)
-    {
-        $path = preg_replace('/.php$/', '.data', __FILE__);
-        $file = $path . '/' . $dataName . '.json';
-        $contents = file_get_contents($file);
-        return json_decode($contents, true);
+        return new JsonFileDataProviderIterator(__FILE__, 'getMonth');
     }
 }
