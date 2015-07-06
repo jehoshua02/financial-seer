@@ -5,7 +5,6 @@ use \FinancialSeer\Projection;
 class ProjectionTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @group wip
      * @dataProvider getMonthProvider
      */
     public function testGetMonth($data)
