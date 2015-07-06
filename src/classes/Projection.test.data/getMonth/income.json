@@ -1,0 +1,20 @@
+{
+  "input": {
+    "account": {
+      "balance": 1000.00
+    },
+    "income": {
+      "start": [2015, 6],
+      "salary": 90000.00
+    }
+  },
+  "args": [2015, 7],
+  "expected": {
+    "income": 15000.00,
+    "fixedExpense": 0,
+    "variableExpense": 0,
+    "debtPayment": 0,
+    "mortgagePayment": 0,
+    "accountBalance": 16000.00
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "input": {},
+  "args": [2015, 1, 1],
+  "expected": {
+    "income": 0,
+    "fixedExpense": 0,
+    "variableExpense": 0,
+    "debtPayment": 0,
+    "mortgagePayment": 0,
+    "accountBalance": 0
+  }
+}
