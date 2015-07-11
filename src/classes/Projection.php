@@ -57,9 +57,9 @@ class Projection
         return [
             "income" => $this->getIncome($year, $month),
             "fixedExpense" => $this->getFixedExpense($year, $month),
-            "variableExpense" => 0,
-            "debtPayment" => 0,
-            "mortgagePayment" => 0,
+            "variableExpense" => 0, // TODO
+            "debtPayment" => 0, // TODO
+            "mortgagePayment" => 0, // TODO
             "accountBalance" => $this->getAccountBalance($year, $month),
         ];
     }
@@ -84,6 +84,7 @@ class Projection
 
     protected function getFixedExpense($year, $month)
     {
+        // TODO multiple fixed expenses
         $config = $this->config["fixedExpense"];
         if ($config["start"] === null) {
             return 0;
