@@ -18,6 +18,15 @@ class Projection
         ]
     ];
 
+    public function __construct($config = null) {
+        if ($config === null) { return; }
+
+        foreach ($config as $key => $value) {
+            $method = "add" . ucfirst($key);
+            $this->$method($value);
+        }
+    }
+
     public function addAccount($config)
     {
         $this->config["account"] = $config;
