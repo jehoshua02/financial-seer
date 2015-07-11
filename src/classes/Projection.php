@@ -11,6 +11,10 @@ class Projection
         "income" => [
             "start" => null,
             "salary" => null,
+        ],
+        "fixedExpense" => [
+            "start" => null,
+            "amount" => 0,
         ]
     ];
 
@@ -24,11 +28,16 @@ class Projection
         $this->config["income"] = $config;
     }
 
+    public function addFixedExpense($config)
+    {
+        $this->config["fixedExpense"] = $config;
+    }
+
     public function getMonth($year, $month)
     {
         return [
             "income" => $this->getIncome($year, $month),
-            "fixedExpense" => 0,
+            "fixedExpense" => $this->getFixedExpense($year, $month),
             "variableExpense" => 0,
             "debtPayment" => 0,
             "mortgagePayment" => 0,
@@ -51,7 +60,18 @@ class Projection
         return array_sum([
             $this->config["account"]["balance"],
             $this->getIncome($year, $month),
+            -$this->getFixedExpense($year, $month),
         ]);
+    }
+
+    protected function getFixedExpense($year, $month)
+    {
+        $config = $this->config["fixedExpense"];
+        if ($config["start"] === null) {
+            return 0;
+        }
+        $months = $this->getMonths($config["start"], [$year, $month]);
+        return $config["amount"] * $months;
     }
 
     protected function getMonths($startYearMonth, $endYearMonth)

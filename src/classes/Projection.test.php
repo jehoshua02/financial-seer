@@ -16,6 +16,9 @@ class ProjectionTest extends PHPUnit_Framework_TestCase
         if (array_key_exists("income", $data["input"])) {
             call_user_func([$projection, "addIncome"], $data["input"]["income"]);
         }
+        if (array_key_exists("fixedExpense", $data["input"])) {
+            call_user_func([$projection, "addFixedExpense"], $data["input"]["fixedExpense"]);
+        }
         $actual = call_user_func_array([$projection, "getMonth"], $data["args"]);
         $this->assertEquals($data["expected"], $actual);
     }
