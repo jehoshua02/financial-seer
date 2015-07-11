@@ -2,6 +2,9 @@
 
 namespace FinancialSeer;
 
+use \FinancialSeer\Projection\Income;
+use \FinancialSeer\Projection\YearMonth;
+
 class Projection
 {
     protected $config = [
@@ -37,7 +40,11 @@ class Projection
 
     public function addIncome($config)
     {
-        $this->config["income"][] = $config;
+        $config["start"] = YearMonth::from($config["start"]);
+        if (!empty($config["end"])) {
+            $config["end"] = YearMonth::from($config["end"]);
+        }
+        $this->config["income"][] = new Projection\Income($config);
     }
 
     public function addFixedExpense($config)
@@ -61,10 +68,7 @@ class Projection
     {
         $sum = 0;
         foreach ($this->config["income"] as $income) {
-            $start = $income["start"];
-            $end = empty($income["end"]) ? [$year, $month] : $this->minYearMonth($income["end"], [$year, $month]);
-            $months = $this->getMonths($start, $end);
-            $sum += $income["salary"] / 12 * $months;
+            $sum += $income->getMonth(YearMonth::from([$year, $month]));
         }
         return $sum;
     }
