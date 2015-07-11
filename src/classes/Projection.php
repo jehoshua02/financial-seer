@@ -56,7 +56,7 @@ class Projection
     {
         return [
             "income" => $this->getIncome($year, $month),
-            "fixedExpense" => $this->getFixedExpense($year, $month),
+            "fixedExpense" => 0,
             "variableExpense" => 0, // TODO
             "debtPayment" => 0, // TODO
             "mortgagePayment" => 0, // TODO
@@ -78,48 +78,6 @@ class Projection
         return array_sum([
             $this->config["account"]["balance"],
             $this->getIncome($year, $month),
-            -$this->getFixedExpense($year, $month),
         ]);
-    }
-
-    protected function getFixedExpense($year, $month)
-    {
-        // TODO multiple fixed expenses
-        $config = $this->config["fixedExpense"];
-        if ($config["start"] === null) {
-            return 0;
-        }
-        $months = $this->getMonths($config["start"], [$year, $month]);
-        return $config["amount"] * $months;
-    }
-
-    protected function getMonths($startYearMonth, $endYearMonth)
-    {
-        $startDate = join("-", [
-            $startYearMonth[0],
-            $startYearMonth[1],
-            1,
-        ]);
-
-        $endDate = join("-", [
-            $endYearMonth[0],
-            $endYearMonth[1],
-            1,
-        ]);
-
-        $startDate = new \DateTime($startDate);
-        $endDate = new \DateTime($endDate);
-        $diff = $startDate->diff($endDate);
-        $months = $diff->y * 12 + $diff->m + 1;
-        return $months;
-    }
-
-    protected function minYearMonth($yearMonth1, $yearMonth2)
-    {
-        if ($yearMonth1[0] < $yearMonth2 && $yearMonth1[1] < $yearMonth2[1]) {
-            return $yearMonth1;
-        } else {
-            return $yearMonth2;
-        }
     }
 }
