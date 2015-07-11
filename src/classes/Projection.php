@@ -11,11 +11,7 @@ class Projection
         "account" => [
             "balance" => 0,
         ],
-        "income" => [],
-        "fixedExpense" => [
-            "start" => null,
-            "amount" => 0,
-        ]
+        "income" => []
     ];
 
     public function __construct($config = null) {
@@ -45,11 +41,6 @@ class Projection
             $config["end"] = YearMonth::from($config["end"]);
         }
         $this->config["income"][] = new Projection\Income($config);
-    }
-
-    public function addFixedExpense($config)
-    {
-        $this->config["fixedExpense"] = $config;
     }
 
     public function getMonth($year, $month)
