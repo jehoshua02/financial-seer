@@ -8,10 +8,7 @@ class Projection
         "account" => [
             "balance" => 0,
         ],
-        "income" => [
-            "start" => null,
-            "salary" => null,
-        ],
+        "income" => [],
         "fixedExpense" => [
             "start" => null,
             "amount" => 0,
@@ -21,9 +18,15 @@ class Projection
     public function __construct($config = null) {
         if ($config === null) { return; }
 
-        foreach ($config as $key => $value) {
-            $method = "add" . ucfirst($key);
-            $this->$method($value);
+        foreach ($config as $type => $value) {
+            $method = "add" . ucfirst($type);
+            if ($type === "income") {
+                foreach ($value as $item) {
+                    $this->$method($item);
+                }
+            } else {
+                $this->$method($value);
+            }
         }
     }
 
@@ -34,7 +37,7 @@ class Projection
 
     public function addIncome($config)
     {
-        $this->config["income"] = $config;
+        $this->config["income"][] = $config;
     }
 
     public function addFixedExpense($config)
@@ -56,12 +59,14 @@ class Projection
 
     protected function getIncome($year, $month)
     {
-        $config = $this->config["income"];
-        if ($config["start"] === null) {
-            return 0;
+        $sum = 0;
+        foreach ($this->config["income"] as $income) {
+            $start = $income["start"];
+            $end = empty($income["end"]) ? [$year, $month] : $this->minYearMonth($income["end"], [$year, $month]);
+            $months = $this->getMonths($start, $end);
+            $sum += $income["salary"] / 12 * $months;
         }
-        $months = $this->getMonths($config["start"], [$year, $month]);
-        return $config["salary"] / 12 * $months;
+        return $sum;
     }
 
     protected function getAccountBalance($year, $month)
@@ -102,5 +107,14 @@ class Projection
         $diff = $startDate->diff($endDate);
         $months = $diff->y * 12 + $diff->m + 1;
         return $months;
+    }
+
+    protected function minYearMonth($yearMonth1, $yearMonth2)
+    {
+        if ($yearMonth1[0] < $yearMonth2 && $yearMonth1[1] < $yearMonth2[1]) {
+            return $yearMonth1;
+        } else {
+            return $yearMonth2;
+        }
     }
 }
