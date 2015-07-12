@@ -9,6 +9,10 @@ class YearMonth extends Model
 
     public static function from($yearMonth)
     {
+        if ($yearMonth instanceof YearMonth) {
+            return $yearMonth;
+        }
+
         return new YearMonth([
             "year" => $yearMonth[0],
             "month" => $yearMonth[1],

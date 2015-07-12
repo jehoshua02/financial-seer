@@ -36,48 +36,45 @@ class Projection
 
     public function addIncome($config)
     {
-        $config["start"] = YearMonth::from($config["start"]);
-        if (!empty($config["end"])) {
-            $config["end"] = YearMonth::from($config["end"]);
-        }
         $this->config["income"][] = new Projection\Income($config);
     }
 
-    public function getMonth($year, $month)
+    public function getMonth($yearMonth)
     {
+        $yearMonth = YearMonth::from($yearMonth);
         return [
-            "income" => $this->getIncome($year, $month),
+            "income" => $this->getIncome($yearMonth),
             "fixedExpense" => 0,
             "variableExpense" => 0, // TODO
             "debtPayment" => 0, // TODO
             "mortgagePayment" => 0, // TODO
-            "accountBalance" => $this->getAccountBalance($year, $month),
+            "accountBalance" => $this->getAccountBalance($yearMonth),
         ];
     }
 
-    protected function getIncome($year, $month)
+    protected function getIncome(YearMonth $yearMonth)
     {
         $sum = 0;
         foreach ($this->config["income"] as $income) {
-            $sum += $income->getMonth(YearMonth::from([$year, $month]));
+            $sum += $income->getMonth($yearMonth);
         }
         return $sum;
     }
 
-    protected function incomeAccumulated($year, $month)
+    protected function incomeAccumulated(YearMonth $yearMonth)
     {
         $sum = 0;
         foreach ($this->config["income"] as $income) {
-            $sum += $income->accumulated($year, $month);
+            $sum += $income->accumulated($yearMonth);
         }
         return $sum;
     }
 
-    protected function getAccountBalance($year, $month)
+    protected function getAccountBalance(YearMonth $yearMonth)
     {
         return array_sum([
             $this->config["account"]["balance"],
-            $this->incomeAccumulated($year, $month),
+            $this->incomeAccumulated($yearMonth),
         ]);
     }
 }

@@ -8,26 +8,27 @@ class Income extends Model
     protected $start;
     protected $end;
 
-    public function getMonth(YearMonth $yearMonth)
+    public function getMonth($yearMonth)
     {
+        $yearMonth = YearMonth::from($yearMonth);
         $start = $this->start;
-        $end = !empty($this->end) ? $this->end : $yearMonth;
+        $end = $this->end($yearMonth);
         $inRange = $yearMonth->isWithin($start, $end);
         return $inRange ? $this->salary / 12 : 0;
     }
 
-    public function accumulated($year, $month)
+    public function accumulated($yearMonth)
     {
-        $yearMonth = YearMonth::from([$year, $month]);
+        $yearMonth = YearMonth::from($yearMonth);
         $start = $this->start;
         $end = $this->end($yearMonth)->min($yearMonth);
         $months = $start->monthsBetween($end);
         return $this->salary / 12 * $months;
     }
 
-    protected function end($default)
+    protected function end(YearMonth $default)
     {
-        return empty($this->end) ? $default : $this->end;
+        return !empty($this->end) ? $this->end : $default;
     }
 
     protected function setSalary($salary)
@@ -35,13 +36,13 @@ class Income extends Model
         $this->salary = $salary;
     }
 
-    protected function setStart(YearMonth $start)
+    protected function setStart($start)
     {
-        $this->start = $start;
+        $this->start = YearMonth::from($start);
     }
 
-    protected function setEnd(YearMonth $end)
+    protected function setEnd($end)
     {
-        $this->end = $end;
+        $this->end = YearMonth::from($end);
     }
 }
