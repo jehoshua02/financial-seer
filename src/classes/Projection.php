@@ -36,21 +36,6 @@ class Projection
         }
     }
 
-    public function addAccount($config)
-    {
-        $this->config["account"] = $config;
-    }
-
-    public function addIncome($config)
-    {
-        $this->config["income"][] = new Income($config);
-    }
-
-    public function addFixedExpense($config)
-    {
-        $this->config["fixedExpense"][] = new FixedExpense($config);
-    }
-
     public function getMonth($yearMonth)
     {
         $yearMonth = YearMonth::from($yearMonth);
@@ -62,6 +47,11 @@ class Projection
             "mortgagePayment" => 0, // TODO
             "accountBalance" => $this->getAccountBalance($yearMonth),
         ];
+    }
+
+    protected function addIncome($config)
+    {
+        $this->config["income"][] = new Income($config);
     }
 
     protected function getIncome(YearMonth $yearMonth)
@@ -82,6 +72,11 @@ class Projection
         return $sum;
     }
 
+    protected function addFixedExpense($config)
+    {
+        $this->config["fixedExpense"][] = new FixedExpense($config);
+    }
+
     protected function getFixedExpense(YearMonth $yearMonth)
     {
         $sum = 0;
@@ -98,6 +93,11 @@ class Projection
             $sum += $fixedExpense->accumulated($yearMonth);
         }
         return $sum;
+    }
+
+    protected function addAccount($config)
+    {
+        $this->config["account"] = $config;
     }
 
     protected function getAccountBalance(YearMonth $yearMonth)
