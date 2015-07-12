@@ -15,21 +15,14 @@ class YearMonth extends Model
         ]);
     }
 
-    public function year()
-    {
-        return $this->year;
-    }
-
-    public function month()
-    {
-        return $this->month;
-    }
-
     public function monthsBetween(YearMonth $that)
     {
-        $thisMonths = $this->year * 12 + $this->month;
-        $thatMonths = $that->year() * 12 + $that->month();
-        return abs($thisMonths - $thatMonths) + 1;
+        return abs($this->toInt() - $that->toInt()) + 1;
+    }
+
+    public function isWithin(YearMonth $start, YearMonth $end)
+    {
+        return $start->toInt() <= $this->toInt() && $this->toInt() <= $end->toInt();
     }
 
     public function min(YearMonth $that)
@@ -39,7 +32,12 @@ class YearMonth extends Model
 
     public function lessThan(YearMonth $that)
     {
-        return $this->year < $that->year() && $this->month < $that->month;
+        return $this->toInt() < $that->toInt();
+    }
+
+    public function toInt()
+    {
+        return $this->year * 12 + $this->month;
     }
 
     protected function setYear($year)

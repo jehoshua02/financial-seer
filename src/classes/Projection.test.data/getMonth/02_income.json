@@ -10,7 +10,7 @@
   },
   "args": [2015, 12],
   "expected": {
-    "income": 80000.00,
+    "income": 7500.00,
     "fixedExpense": 0,
     "variableExpense": 0,
     "debtPayment": 0,

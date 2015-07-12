@@ -64,11 +64,20 @@ class Projection
         return $sum;
     }
 
+    protected function incomeAccumulated($year, $month)
+    {
+        $sum = 0;
+        foreach ($this->config["income"] as $income) {
+            $sum += $income->accumulated($year, $month);
+        }
+        return $sum;
+    }
+
     protected function getAccountBalance($year, $month)
     {
         return array_sum([
             $this->config["account"]["balance"],
-            $this->getIncome($year, $month),
+            $this->incomeAccumulated($year, $month),
         ]);
     }
 }
