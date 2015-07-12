@@ -2,8 +2,9 @@
 
 namespace FinancialSeer;
 
-use \FinancialSeer\Projection\Income;
 use \FinancialSeer\Projection\YearMonth;
+use \FinancialSeer\Projection\Income;
+use \FinancialSeer\Projection\FixedExpense;
 
 class Projection
 {
@@ -11,15 +12,21 @@ class Projection
         "account" => [
             "balance" => 0,
         ],
-        "income" => []
+        "income" => [],
+        "fixedExpense" => [],
     ];
 
     public function __construct($config = null) {
         if ($config === null) { return; }
 
+        $hasMany = [
+            "income",
+            "fixedExpense",
+        ];
+
         foreach ($config as $type => $value) {
             $method = "add" . ucfirst($type);
-            if ($type === "income") {
+            if (in_array($type, $hasMany)) {
                 foreach ($value as $item) {
                     $this->$method($item);
                 }
@@ -36,7 +43,12 @@ class Projection
 
     public function addIncome($config)
     {
-        $this->config["income"][] = new Projection\Income($config);
+        $this->config["income"][] = new Income($config);
+    }
+
+    public function addFixedExpense($config)
+    {
+        $this->config["fixedExpense"][] = new FixedExpense($config);
     }
 
     public function getMonth($yearMonth)
@@ -44,7 +56,7 @@ class Projection
         $yearMonth = YearMonth::from($yearMonth);
         return [
             "income" => $this->getIncome($yearMonth),
-            "fixedExpense" => 0,
+            "fixedExpense" => $this->getFixedExpense($yearMonth),
             "variableExpense" => 0, // TODO
             "debtPayment" => 0, // TODO
             "mortgagePayment" => 0, // TODO
@@ -70,11 +82,30 @@ class Projection
         return $sum;
     }
 
+    protected function getFixedExpense(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["fixedExpense"] as $fixedExpense) {
+            $sum += $fixedExpense->getMonth($yearMonth);
+        }
+        return $sum;
+    }
+
+    protected function fixedExpenseAccumulated(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["fixedExpense"] as $fixedExpense) {
+            $sum += $fixedExpense->accumulated($yearMonth);
+        }
+        return $sum;
+    }
+
     protected function getAccountBalance(YearMonth $yearMonth)
     {
         return array_sum([
             $this->config["account"]["balance"],
             $this->incomeAccumulated($yearMonth),
+            -$this->fixedExpenseAccumulated($yearMonth),
         ]);
     }
 }

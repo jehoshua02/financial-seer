@@ -2,9 +2,9 @@
 
 namespace FinancialSeer\Projection;
 
-class Income extends Model
+class FixedExpense extends Model
 {
-    protected $salary;
+    protected $amount;
     protected $start;
     protected $end;
 
@@ -14,7 +14,7 @@ class Income extends Model
         $start = $this->start;
         $end = !empty($this->end) ? $this->end : $yearMonth;
         $inRange = $yearMonth->isWithin($start, $end);
-        return $inRange ? $this->salary / 12 : 0;
+        return $inRange ? $this->amount : 0;
     }
 
     public function accumulated($yearMonth)
@@ -24,12 +24,12 @@ class Income extends Model
         $end = !empty($this->end) ? $this->end : $yearMonth;
         $end = $end->min($yearMonth);
         $months = $start->monthsBetween($end);
-        return $this->salary / 12 * $months;
+        return $this->amount * $months;
     }
 
-    protected function setSalary($salary)
+    protected function setAmount($amount)
     {
-        $this->salary = $salary;
+        $this->amount = $amount;
     }
 
     protected function setStart($start)
