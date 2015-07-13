@@ -5,6 +5,7 @@ namespace FinancialSeer;
 use \FinancialSeer\Projection\YearMonth;
 use \FinancialSeer\Projection\Income;
 use \FinancialSeer\Projection\FixedExpense;
+use \FinancialSeer\Projection\Debt;
 
 class Projection
 {
@@ -14,6 +15,7 @@ class Projection
         ],
         "income" => [],
         "fixedExpense" => [],
+        "debt" => [],
     ];
 
     public function __construct($config = null) {
@@ -22,6 +24,7 @@ class Projection
         $hasMany = [
             "income",
             "fixedExpense",
+            "debt",
         ];
 
         foreach ($config as $type => $value) {
@@ -43,7 +46,7 @@ class Projection
             "income" => $this->getIncome($yearMonth),
             "fixedExpense" => $this->getFixedExpense($yearMonth),
             "variableExpense" => 0, // TODO
-            "debtPayment" => 0, // TODO
+            "debt" => $this->getDebt($yearMonth),
             "mortgagePayment" => 0, // TODO
             "accountBalance" => $this->getAccountBalance($yearMonth),
         ];
@@ -95,6 +98,29 @@ class Projection
         return $sum;
     }
 
+    protected function addDebt($config)
+    {
+        $this->config["debt"][] = new Debt($config);
+    }
+
+    protected function getDebt(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["debt"] as $debt) {
+            $sum += $debt->getMonth($yearMonth);
+        }
+        return $sum;
+    }
+
+    protected function debtAccumulated(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["debt"] as $debt) {
+            $sum += $debt->accumulated($yearMonth);
+        }
+        return $sum;
+    }
+
     protected function addAccount($config)
     {
         $this->config["account"] = $config;
@@ -106,6 +132,7 @@ class Projection
             $this->config["account"]["balance"],
             $this->incomeAccumulated($yearMonth),
             -$this->fixedExpenseAccumulated($yearMonth),
+            -$this->debtAccumulated($yearMonth),
         ]);
     }
 }

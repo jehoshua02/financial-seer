@@ -13,9 +13,19 @@ class YearMonth extends Model
             return $yearMonth;
         }
 
+        if (is_int($yearMonth)) {
+            $month = $yearMonth % 12;
+            $year = $yearMonth - $month / 12;
+        }
+
+        if (is_array($yearMonth)) {
+            $year = $yearMonth[0];
+            $month = $yearMonth[1];
+        }
+
         return new YearMonth([
-            "year" => $yearMonth[0],
-            "month" => $yearMonth[1],
+            "year" => $year,
+            "month" => $month,
         ]);
     }
 
