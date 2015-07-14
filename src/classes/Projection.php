@@ -5,6 +5,7 @@ namespace FinancialSeer;
 use \FinancialSeer\Projection\YearMonth;
 use \FinancialSeer\Projection\Income;
 use \FinancialSeer\Projection\FixedExpense;
+use \FinancialSeer\Projection\VariableExpense;
 use \FinancialSeer\Projection\Debt;
 
 class Projection
@@ -15,6 +16,7 @@ class Projection
         ],
         "income" => [],
         "fixedExpense" => [],
+        "variableExpense" => [],
         "debt" => [],
     ];
 
@@ -24,6 +26,7 @@ class Projection
         $hasMany = [
             "income",
             "fixedExpense",
+            "variableExpense",
             "debt",
         ];
 
@@ -45,7 +48,7 @@ class Projection
         return [
             "income" => $this->getIncome($yearMonth),
             "fixedExpense" => $this->getFixedExpense($yearMonth),
-            "variableExpense" => 0, // TODO
+            "variableExpense" => $this->getVariableExpense($yearMonth),
             "debt" => $this->getDebt($yearMonth),
             "mortgagePayment" => 0, // TODO
             "accountBalance" => $this->getAccountBalance($yearMonth),
@@ -98,6 +101,29 @@ class Projection
         return $sum;
     }
 
+    protected function addVariableExpense($config)
+    {
+        $this->config["variableExpense"][] = new VariableExpense($config);
+    }
+
+    protected function getVariableExpense(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["variableExpense"] as $variableExpense) {
+            $sum += $variableExpense->getMonth($yearMonth);
+        }
+        return $sum;
+    }
+
+    protected function variableExpenseAccumulated(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["variableExpense"] as $variableExpense) {
+            $sum += $variableExpense->accumulated($yearMonth);
+        }
+        return $sum;
+    }
+
     protected function addDebt($config)
     {
         $this->config["debt"][] = new Debt($config);
@@ -132,6 +158,7 @@ class Projection
             $this->config["account"]["balance"],
             $this->incomeAccumulated($yearMonth),
             -$this->fixedExpenseAccumulated($yearMonth),
+            -$this->variableExpenseAccumulated($yearMonth),
             -$this->debtAccumulated($yearMonth),
         ]);
     }

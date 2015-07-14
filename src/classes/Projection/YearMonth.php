@@ -15,7 +15,8 @@ class YearMonth extends Model
 
         if (is_int($yearMonth)) {
             $month = $yearMonth % 12;
-            $year = $yearMonth - $month / 12;
+            $year = ($yearMonth - $month) / 12;
+            $month = max($month, 1);
         }
 
         if (is_array($yearMonth)) {
@@ -52,6 +53,12 @@ class YearMonth extends Model
     public function toInt()
     {
         return $this->year * 12 + $this->month;
+    }
+
+    public function __get($name)
+    {
+        if (!property_exists($this, $name)) { return; }
+        return $this->$name;
     }
 
     protected function setYear($year)
