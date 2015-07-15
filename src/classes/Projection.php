@@ -7,6 +7,7 @@ use \FinancialSeer\Projection\Income;
 use \FinancialSeer\Projection\FixedExpense;
 use \FinancialSeer\Projection\VariableExpense;
 use \FinancialSeer\Projection\Debt;
+use \FinancialSeer\Projection\Mortgage;
 
 class Projection
 {
@@ -18,6 +19,7 @@ class Projection
         "fixedExpense" => [],
         "variableExpense" => [],
         "debt" => [],
+        "mortgage" => [],
     ];
 
     public function __construct($config = null) {
@@ -28,6 +30,7 @@ class Projection
             "fixedExpense",
             "variableExpense",
             "debt",
+            "mortgage",
         ];
 
         foreach ($config as $type => $value) {
@@ -50,7 +53,7 @@ class Projection
             "fixedExpense" => $this->getFixedExpense($yearMonth),
             "variableExpense" => $this->getVariableExpense($yearMonth),
             "debt" => $this->getDebt($yearMonth),
-            "mortgage" => 0, // $this->getMortgage($yearMonth), TODO
+            "mortgage" => $this->getMortgage($yearMonth),
             "accountBalance" => $this->getAccountBalance($yearMonth),
         ];
     }
@@ -147,6 +150,29 @@ class Projection
         return $sum;
     }
 
+    protected function addMortgage($config)
+    {
+        $this->config["mortgage"][] = new Mortgage($config);
+    }
+
+    protected function getMortgage(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["mortgage"] as $mortgage) {
+            $sum += $mortgage->getMonth($yearMonth);
+        }
+        return $sum;
+    }
+
+    protected function mortgageAccumulated(YearMonth $yearMonth)
+    {
+        $sum = 0;
+        foreach ($this->config["mortgage"] as $mortgage) {
+            $sum += $mortgage->accumulated($yearMonth);
+        }
+        return $sum;
+    }
+
     protected function addAccount($config)
     {
         $this->config["account"] = $config;
@@ -160,7 +186,7 @@ class Projection
             -$this->fixedExpenseAccumulated($yearMonth),
             -$this->variableExpenseAccumulated($yearMonth),
             -$this->debtAccumulated($yearMonth),
-            // -$this->mortgageAccumulated($yearMonth), TODO
+            -$this->mortgageAccumulated($yearMonth),
         ]);
     }
 }
