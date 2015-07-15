@@ -6,7 +6,7 @@
     "fixedExpense": 0,
     "variableExpense": 0,
     "debt": 0,
-    "mortgagePayment": 0,
+    "mortgage": 0,
     "accountBalance": 0
   }
 }

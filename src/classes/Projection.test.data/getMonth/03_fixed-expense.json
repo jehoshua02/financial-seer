@@ -18,7 +18,7 @@
     "fixedExpense": 700.00,
     "variableExpense": 0,
     "debt": 0,
-    "mortgagePayment": 0,
+    "mortgage": 0,
     "accountBalance": 73800.00
   }
 }

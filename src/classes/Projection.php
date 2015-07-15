@@ -50,7 +50,7 @@ class Projection
             "fixedExpense" => $this->getFixedExpense($yearMonth),
             "variableExpense" => $this->getVariableExpense($yearMonth),
             "debt" => $this->getDebt($yearMonth),
-            "mortgagePayment" => 0, // TODO
+            "mortgage" => 0, // $this->getMortgage($yearMonth), TODO
             "accountBalance" => $this->getAccountBalance($yearMonth),
         ];
     }
@@ -160,6 +160,7 @@ class Projection
             -$this->fixedExpenseAccumulated($yearMonth),
             -$this->variableExpenseAccumulated($yearMonth),
             -$this->debtAccumulated($yearMonth),
+            // -$this->mortgageAccumulated($yearMonth), TODO
         ]);
     }
 }
